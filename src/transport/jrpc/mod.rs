@@ -2,7 +2,7 @@ use std::sync::Arc;
 
 use anyhow::Result;
 use serde::{Deserialize, Serialize};
-use ton_block::{Block, Deserializable, MsgAddressInt};
+use ton_block::{Deserializable, MsgAddressInt};
 
 use nekoton_utils::*;
 
@@ -183,7 +183,7 @@ impl Transport for JrpcTransport {
         data.map(|boc| decode_raw_transaction(&boc)).transpose()
     }
 
-    async fn get_latest_key_block(&self) -> Result<Block> {
+    async fn get_latest_key_block(&self) -> Result<Vec<u8>> {
         let req = external::JrpcRequest {
             data: make_jrpc_request("getLatestKeyBlock", &()),
             requires_db: true,
@@ -192,7 +192,7 @@ impl Transport for JrpcTransport {
             .post(req)
             .await
             .map(|data| tiny_jsonrpc::parse_response(&data))?
-            .map(|block: GetBlockResponse| block.block)
+            .map(|block: GetRawBlockResponse| block.data)
     }
 
     async fn get_capabilities(&self, clock: &dyn Clock) -> Result<NetworkCapabilities> {

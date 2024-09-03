@@ -1,3 +1,4 @@
+#![allow(dead_code)]
 use either::Either;
 use syn::punctuated::Punctuated;
 

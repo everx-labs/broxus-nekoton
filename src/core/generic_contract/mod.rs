@@ -97,7 +97,7 @@ impl GenericContract {
         Ok(())
     }
 
-    pub async fn handle_block(&mut self, block: &ton_block::Block) -> Result<()> {
+    pub async fn handle_block(&mut self, block: &[u8]) -> Result<()> {
         let handler = self.handler.as_ref();
         let new_account_state = self.contract_subscription.handle_block(
             block,

@@ -128,15 +128,14 @@ impl GqlTransport {
         }
     }
 
-    pub async fn get_block(&self, id: &str) -> Result<ton_block::Block> {
+    pub async fn get_block(&self, id: &str) -> Result<Vec<u8>> {
         let blocks = self
             .fetch::<QueryBlock>(query_block::Variables { id: id.to_owned() })
             .await?
             .blocks;
         let boc = blocks.into_iter().next().ok_or_else(no_blocks_found)?.boc;
 
-        ton_block::Block::construct_from_base64(&boc)
-            .map_err(|_| NodeClientError::InvalidBlock.into())
+        base64::decode(&boc).map_err(|err| NodeClientError::InvalidBlock(err.to_string()).into())
     }
 
     pub async fn wait_for_next_block(
@@ -345,12 +344,10 @@ impl Transport for GqlTransport {
         .transpose()
     }
 
-    async fn get_latest_key_block(&self) -> Result<ton_block::Block> {
+    async fn get_latest_key_block(&self) -> Result<Vec<u8>> {
         let blocks = self.fetch::<QueryLatestKeyBlock>(()).await?.blocks;
         let boc = blocks.into_iter().next().ok_or_else(no_blocks_found)?.boc;
-
-        ton_block::Block::construct_from_base64(&boc)
-            .map_err(|_| NodeClientError::InvalidBlock.into())
+        base64::decode(boc).map_err(|err| NodeClientError::InvalidBlock(err.to_string()).into())
     }
 
     async fn get_capabilities(&self, clock: &dyn Clock) -> Result<NetworkCapabilities> {
@@ -431,8 +428,8 @@ pub enum NodeClientError {
     NoBlocksFound,
     #[error("Unsupported network")]
     UnsupportedNetwork,
-    #[error("Invalid block")]
-    InvalidBlock,
+    #[error("Invalid block {0}")]
+    InvalidBlock(String),
     #[error("Invalid config")]
     InvalidConfig,
 }

@@ -1,7 +1,7 @@
 use std::sync::Arc;
 
 use anyhow::Result;
-use ton_block::{Block, Deserializable, MsgAddressInt, Serializable};
+use ton_block::{Deserializable, MsgAddressInt, Serializable};
 
 use nekoton_proto::prost::{bytes::Bytes, Message};
 use nekoton_proto::protos::rpc;
@@ -265,7 +265,7 @@ impl Transport for ProtoTransport {
         }
     }
 
-    async fn get_latest_key_block(&self) -> Result<Block> {
+    async fn get_latest_key_block(&self) -> Result<Vec<u8>> {
         let data = rpc::Request {
             call: Some(rpc::request::Call::GetLatestKeyBlock(())),
         };
@@ -280,7 +280,7 @@ impl Transport for ProtoTransport {
 
         match response.result {
             Some(rpc::response::Result::GetLatestKeyBlock(key_block)) => {
-                Ok(Block::construct_from_bytes(key_block.block.as_ref())?)
+                Ok(key_block.block.to_vec())
             }
             _ => Err(ProtoClientError::InvalidResponse.into()),
         }

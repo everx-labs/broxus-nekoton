@@ -58,7 +58,7 @@ pub trait Transport: Send + Sync {
         message_hash: &ton_types::UInt256,
     ) -> Result<Option<RawTransaction>>;
 
-    async fn get_latest_key_block(&self) -> Result<ton_block::Block>;
+    async fn get_latest_key_block(&self) -> Result<Vec<u8>>;
 
     async fn get_capabilities(&self, clock: &dyn Clock) -> Result<NetworkCapabilities>;
 

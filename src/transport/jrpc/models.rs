@@ -60,3 +60,8 @@ pub struct GetBlockResponse {
     #[serde(with = "serde_ton_block")]
     pub block: ton_block::Block,
 }
+
+#[derive(Debug, Clone, Serialize, Deserialize)]
+pub struct GetRawBlockResponse {
+    pub data: Vec<u8>,
+}

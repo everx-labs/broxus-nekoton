@@ -290,7 +290,7 @@ impl TokenWallet {
         Ok(())
     }
 
-    pub async fn handle_block(&mut self, block: &ton_block::Block) -> Result<()> {
+    pub async fn handle_block(&mut self, block: &[u8]) -> Result<()> {
         let version = self.version;
         let mut balance: BigInt = self.balance.clone().into();
 

@@ -192,7 +192,7 @@ impl ContractSubscription {
 
     pub fn handle_block(
         &mut self,
-        block: &ton_block::Block,
+        block: &[u8],
         on_transactions_found: OnTransactionsFound<'_>,
         on_message_sent: OnMessageSent<'_>,
         on_message_expired: OnMessageExpired<'_>,
