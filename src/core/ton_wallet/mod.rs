@@ -486,7 +486,7 @@ impl TonWallet {
             .await
     }
 
-    pub async fn handle_block(&mut self, block: &ton_block::Block) -> Result<()> {
+    pub async fn handle_block(&mut self, block: &[u8]) -> Result<()> {
         // TODO: update wallet data here
 
         let handler = self.handler.as_ref();
